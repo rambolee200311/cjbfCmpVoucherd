@@ -133,6 +133,12 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 					
 					//Balance type
 					BalatypeVO balatypeVO=(BalatypeVO)dmo.queryByPrimaryKey(BalatypeVO.class, vobs.get(0).getPj_jsfs());
+					/*
+					 * 20220325 付款单上结算方式  00900已线下支付的 不生成凭证
+					 */
+					if (balatypeVO.getBalancode().equals("00900")){
+						bFlag=0;
+					}
 					
 					String unitCode="001001";
 					String subjCode="";
