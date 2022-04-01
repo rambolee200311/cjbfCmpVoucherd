@@ -97,11 +97,13 @@ public class GlVouch3 {
 			credit5.setDetailindex(3);
 			credit5.setCheckstyle(CreditSubj.getBalaType(subjCode,balatypeVO.getPk_balatype()));
 			credit5.setCheckdate(vo.getPaydate().toString());
-			String strCheckno=psndocVO.getPsnname();
+			/*String strCheckno=psndocVO.getPsnname();
 			if (psndocVO.getPsnname().length()>10){
 				//strCheckno=psndocVO.getPsnname().substring(0,10);
 				strCheckno=CjbfSubString.getSubString(psndocVO.getPsnname(), 30);
-			}
+			}*/
+			//20220401 checkno=djbh
+			String strCheckno=vo.getDjbh();
 			credit5.setCheckno(strCheckno);//(vo.getDjbh());
 			if ((!ass1.equals(""))||(!ass2.equals(""))){
 				List<Ass> assList5=new ArrayList();

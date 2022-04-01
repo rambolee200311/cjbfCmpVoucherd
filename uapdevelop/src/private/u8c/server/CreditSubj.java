@@ -21,6 +21,24 @@ public class CreditSubj {
 			+ File.separator+"gltask"
 			+File.separator+"creditsubj.xml";
 	/*
+	 * 20220401 结算方式是否存在
+	 */
+	public static int getBalanFlag(String balancode){
+		int bFlag=0;//是否生成凭证 1是 0否
+		SAXReader reader = new SAXReader();
+		try {
+			Document document = reader.read(new File(fileName));
+			Element e=(Element)document.selectSingleNode("//Data/balancode[text()='"+balancode+"']/..");
+			if(e!=null){
+				bFlag=1;
+			}
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bFlag;
+	}
+	/*
 	 * 结算方式对应公司
 	 */
 	public static String getUnitCode(String balancode){

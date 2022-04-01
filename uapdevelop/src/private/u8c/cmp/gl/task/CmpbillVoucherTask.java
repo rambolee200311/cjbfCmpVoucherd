@@ -94,6 +94,7 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 							+" where vouchid='"+vouchid+"';";
 					ArrayList<DJZBItemVO> vobs =(ArrayList<DJZBItemVO>) getDao().executeQuery(sql, new BeanListProcessor(DJZBItemVO.class));
 					strLogger+= "单据编号："+vo.getDjbh()+" "+vo.getZyx1()+" "+vo.getZyx2()+" "+vo.getZyx3();
+					
 					//customer base doc
 					CustBasVO custBasVO=new CustBasVO();
 					if ((vobs.get(0).getHbbm()!=null)&&(!vobs.get(0).getHbbm().equals(""))){
@@ -136,6 +137,9 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 					/*
 					 * 20220325 付款单上结算方式  00900已线下支付的 不生成凭证
 					 */
+					//20220401 结算方式是否存在
+					bFlag=CreditSubj.getBalanFlag(balatypeVO.getBalancode());
+					
 					if (balatypeVO.getBalancode().equals("00900")){
 						bFlag=0;
 					}
