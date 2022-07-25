@@ -26,6 +26,7 @@ import u8c.gl.vo.Vouchers;
 import u8c.gl.vo.VoucherResult;
 import u8c.server.CjbfSubString;
 import u8c.server.CreditSubj;
+import u8c.server.Explanation;
 
 import com.alibaba.fastjson.JSON;
 
@@ -92,7 +93,8 @@ public class GlVouch4 {
 			}
 			Double wsje=(double)(jfbbje-se);//不含税金额
 			//credit 5 贷 银行存款\北方账户\建行北环支行基本户36151
-			strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 1);
 			Details credit5=new Details();
 			credit5.setPk_accsubj(subjCode);
 			credit5.setCreditamount(String.format("%.2f",jfbbje));
@@ -124,7 +126,8 @@ public class GlVouch4 {
 			
 			
 			//debit  1 借  内部往来
-			strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 7);
 			Details debit1=new Details();	
 			debit1.setPk_accsubj("117102");			
 			debit1.setDebitamount(String.format("%.2f",jfbbje));			
@@ -164,7 +167,8 @@ public class GlVouch4 {
 			List<Details> listDetailsFztpz=new ArrayList();
 			
 			//贷 内部往来
-			strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 7);
 			Details credit15=new Details();
 			credit15.setPk_accsubj("117102");
 			//credit15.setPk_accsubj(CreditSubj.getUnitPkaccsubj("117102",corpvo.getUnitcode(),dao));
@@ -181,6 +185,8 @@ public class GlVouch4 {
 			listDetailsFztpz.add(credit15);
 			if (se!=0){
 				//贷 其他应付款\待转税额\一般计税\
+				//strExplanation="列转"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"待转税额"+"("+vo.getZyx1()+")";
+				strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 2);
 				Details credit14=new Details();
 				credit14.setPk_accsubj("224110001");
 				//credit14.setPk_accsubj(CreditSubj.getUnitPkaccsubj("224110001",corpvo.getUnitcode(),dao));
@@ -196,6 +202,8 @@ public class GlVouch4 {
 				listDetailsFztpz.add(credit14);
 				
 				//借 应交税费\应交增值税\进项税额
+				//strExplanation="列确认"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"进项税额"+"("+vo.getZyx1()+")";
+				strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 3);
 				Details debit13=new Details();
 				debit13.setPk_accsubj("222101001");		
 				//debit13.setPk_accsubj(CreditSubj.getUnitPkaccsubj("222101001",corpvo.getUnitcode(),dao));
@@ -211,6 +219,8 @@ public class GlVouch4 {
 				listDetailsFztpz.add(debit13);
 				
 				//借 应付账款\一般计税\税额
+				//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+				strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 5);
 				Details debit12=new Details();
 				debit12.setPk_accsubj("220202002");		
 				//debit12.setPk_accsubj(CreditSubj.getUnitPkaccsubj("220202002",corpvo.getUnitcode(),dao));
@@ -230,6 +240,8 @@ public class GlVouch4 {
 				listDetailsFztpz.add(debit12);
 			}
 			//借 应付账款\一般计税\成本
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 6);
 			Details debit11=new Details();
 			debit11.setPk_accsubj("220202001");			
 			//debit11.setPk_accsubj(CreditSubj.getUnitPkaccsubj("220202001",corpvo.getUnitcode(),dao));

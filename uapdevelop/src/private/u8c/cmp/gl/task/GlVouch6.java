@@ -28,6 +28,7 @@ import com.alibaba.fastjson.JSON;
 import u8c.server.CjbfSubString;
 import u8c.server.CreditSubj;
 import u8c.server.DebitSubj;
+import u8c.server.Explanation;
 /*
  * 其他费用 对私  分账套核算
  */
@@ -91,7 +92,8 @@ public class GlVouch6 {
 			}
 			Double wsje=(double)(jfbbje-se);//不含税金额
 			//credit 5 贷 银行存款\北方账户\建行北环支行基本户36151
-			strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+psndocVO.getPsnname()+")"+"("+vo.getZyx1()+")";
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+psndocVO.getPsnname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, psndocVO.getPsnname(), vo.getZyx1(), "", 1);
 			Details credit5=new Details();
 			credit5.setPk_accsubj(subjCode);
 			credit5.setCreditamount(String.format("%.2f",jfbbje));
@@ -123,7 +125,8 @@ public class GlVouch6 {
 			
 			
 			//debit  1 借  内部往来
-			strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+psndocVO.getPsnname()+")"+"("+vo.getZyx1()+")";
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+psndocVO.getPsnname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, psndocVO.getPsnname(), vo.getZyx1(), "", 7);
 			Details debit1=new Details();	
 			debit1.setPk_accsubj("117102");			
 			debit1.setDebitamount(String.format("%.2f",jfbbje));			
@@ -163,7 +166,8 @@ public class GlVouch6 {
 			List<Details> listDetailsFztpz=new ArrayList();
 			
 			//贷 内部往来
-			strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+psndocVO.getPsnname()+")"+"("+vo.getZyx1()+")";
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+psndocVO.getPsnname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, psndocVO.getPsnname(), vo.getZyx1(), "", 7);
 			Details credit15=new Details();
 			credit15.setPk_accsubj("117102");
 			//credit15.setPk_accsubj(CreditSubj.getUnitPkaccsubj("117102",corpvo.getUnitcode(),dao));
@@ -183,6 +187,8 @@ public class GlVouch6 {
 				
 				//借 应交税费\应交增值税\进项税额
 				Details debit13=new Details();
+				//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"进项税额"+"("+vo.getZyx1()+")";
+				strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, psndocVO.getPsnname(), vo.getZyx1(), "", 4);
 				debit13.setPk_accsubj("222101001");	
 				//debit13.setPk_accsubj(CreditSubj.getUnitPkaccsubj("222101001",corpvo.getUnitcode(),dao));
 				debit13.setDebitamount(String.format("%.2f",se));			
@@ -198,8 +204,9 @@ public class GlVouch6 {
 				
 			}
 			//借 应付账款\一般计税\成本
-			Details debit11=new Details();
-			
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, psndocVO.getPsnname(), vo.getZyx1(), "", 6);
+			Details debit11=new Details();	
 			String debitSubj=DebitSubj.getDebitSubj(vo.getZyx12(), corpvo.getUnitcode(), dao);			
 			debit11.setPk_accsubj(debitSubj);
 			//debit11.setPk_accsubj(CreditSubj.getUnitPkaccsubj(debitSubj,corpvo.getUnitcode(),dao));	

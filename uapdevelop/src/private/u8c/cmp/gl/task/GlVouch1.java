@@ -35,7 +35,7 @@ import nc.vo.bd.psndoc.PsnbasdocVO;
 import nc.vo.ep.dj.DJZBHeaderVO;
 import nc.vo.ep.dj.DJZBItemVO;
 import nc.vo.pub.lang.UFDate;
-
+import u8c.server.Explanation;
 /*
  * 材料费、人工费、机械费、专业分包费  机关账套核算
  */
@@ -97,7 +97,8 @@ public class GlVouch1 {
 			}
 			Double wsje=(double)(jfbbje-se);//不含税金额
 			//credit 5 银行存款\北方账户\建行北环支行基本户36151
-			strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 1);
 			Details credit5=new Details();
 			credit5.setPk_accsubj(subjCode);
 			credit5.setCreditamount(String.format("%.2f",jfbbje));
@@ -133,7 +134,8 @@ public class GlVouch1 {
 			listDetails.add(credit5);	
 			if (se!=0){
 				//credit 4 其他应付款\待转税额\一般计税\
-				strExplanation="列转"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"待转税额"+"("+vo.getZyx1()+")";
+				//strExplanation="列转"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"待转税额"+"("+vo.getZyx1()+")";
+				strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 2);
 				Details credit4=new Details();
 				credit4.setPk_accsubj("224110001");
 				credit4.setCreditamount(String.format("%.2f",se));
@@ -153,7 +155,8 @@ public class GlVouch1 {
 				listDetails.add(credit4);		
 				
 				//debit  3 应交税费\应交增值税\进项税额
-				strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"进项税额"+"("+vo.getZyx1()+")";
+				//strExplanation="列确认"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"进项税额"+"("+vo.getZyx1()+")";
+				strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 3);
 				Details debit3=new Details();	
 				debit3.setPk_accsubj("222101001");			
 				debit3.setDebitamount(String.format("%.2f",se));			
@@ -172,6 +175,8 @@ public class GlVouch1 {
 				listDetails.add(debit3);
 				
 				//debit  2 应付账款\一般计税\税额
+				//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+				strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 5);
 				Details debit2=new Details();	
 				debit2.setPk_accsubj("220202002");			
 				debit2.setDebitamount(String.format("%.2f",se));			
@@ -190,7 +195,8 @@ public class GlVouch1 {
 				listDetails.add(debit2);
 			}
 			//debit  1 应付账款\一般计税\成本
-			strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			//strExplanation="列付"+deptdocVO.getDeptname()+" "+scomment+"("+custBasVO.getCustname()+")"+"("+vo.getZyx1()+")";
+			strExplanation=Explanation.getExplanation(deptdocVO.getDeptname(), scomment, custBasVO.getCustname(), vo.getZyx1(), "", 6);
 			Details debit1=new Details();	
 			debit1.setPk_accsubj("220202001");			
 			debit1.setDebitamount(String.format("%.2f",wsje));			

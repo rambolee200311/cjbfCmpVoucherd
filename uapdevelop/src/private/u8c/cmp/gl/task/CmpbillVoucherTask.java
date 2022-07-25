@@ -77,15 +77,7 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 				
 				for(DJZBHeaderVO vo : vos){
 					bFlag=1;
-					//已生成过凭证不重复生成
-					if (vo.getZyx15()!=null){
-						if(vo.getZyx15().equals("success")){						
-							bFlag=0;
-						}
-						if(vo.getZyx15().equals("noneed")){						
-							bFlag=0;
-						}
-					}
+					
 					strLogger="";
 					VoucherResult voucherResult=new VoucherResult();
 					vouchid=vo.getVouchid();
@@ -94,6 +86,30 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 							+" where vouchid='"+vouchid+"';";
 					ArrayList<DJZBItemVO> vobs =(ArrayList<DJZBItemVO>) getDao().executeQuery(sql, new BeanListProcessor(DJZBItemVO.class));
 					strLogger+= "单据编号："+vo.getDjbh()+" "+vo.getZyx1()+" "+vo.getZyx2()+" "+vo.getZyx3();
+					//Balance type
+					BalatypeVO balatypeVO=(BalatypeVO)dmo.queryByPrimaryKey(BalatypeVO.class, vobs.get(0).getPj_jsfs());
+					/*
+					 * 20220325 付款单上结算方式  00900已线下支付的 不生成凭证
+					 */
+					//20220401 结算方式是否存在
+					bFlag=CreditSubj.getBalanFlag(balatypeVO.getBalancode());
+					/*
+					if (balatypeVO.getBalancode().equals("00900")){
+						bFlag*=0;
+					} else if (balatypeVO.getBalancode().equals("00900")){
+						bFlag*=0;
+					}					else{
+						bFlag*=1;
+					}
+					*/
+					switch(balatypeVO.getBalancode()){
+						case "00900":
+						case "00903":
+							bFlag*=0;
+							break;
+						default:
+							bFlag*=1;
+					}
 					
 					//customer base doc
 					CustBasVO custBasVO=new CustBasVO();
@@ -104,14 +120,12 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 						custBasVO=(CustBasVO)getDao().executeQuery(sql,new BeanProcessor(CustBasVO.class));
 						//CubasdocVO cubasdocVO=(CubasdocVO)dmo.queryByPrimaryKey(CubasdocVO.class, vobs.get(0).getHbbm());	
 						//CubasdocVO cubasdocVO=(CubasdocVO)getDao().executeQuery(sql,new BeanProcessor(CubasdocVO.class));
-						//预交某某税不生成凭证
-						/*if ((custBasVO.getCustname().indexOf("预交")>=0)
-							&&(custBasVO.getCustname().indexOf("税")>=0)){
-							bFlag=0;
-						}*/
-						if (custBasVO.getCustname().indexOf("预交")>=0){
-								bFlag=0;
-							}
+						//预交某某税不生成凭证						
+						if (custBasVO.getCustname().indexOf("预交")<0){
+								bFlag*=1;
+						}else{
+							bFlag*=0;
+						}
 					}
 					//department
 					DeptdocVO deptdocVO=(DeptdocVO)dmo.queryByPrimaryKey(DeptdocVO.class, vobs.get(0).getDeptid());		
@@ -132,17 +146,7 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 					//Cost subject
 					CostsubjVO costsubjVO=(CostsubjVO)dmo.queryByPrimaryKey(CostsubjVO.class, vobs.get(0).getSzxmid());
 					
-					//Balance type
-					BalatypeVO balatypeVO=(BalatypeVO)dmo.queryByPrimaryKey(BalatypeVO.class, vobs.get(0).getPj_jsfs());
-					/*
-					 * 20220325 付款单上结算方式  00900已线下支付的 不生成凭证
-					 */
-					//20220401 结算方式是否存在
-					bFlag=CreditSubj.getBalanFlag(balatypeVO.getBalancode());
 					
-					if (balatypeVO.getBalancode().equals("00900")){
-						bFlag=0;
-					}
 					
 					String unitCode="001001";
 					String subjCode="";
@@ -154,11 +158,24 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 					//corpvo
 					if (unitCode.equals("")){
 						if (corpvo.getUnitcode()!=null){
-							unitCode=corpvo.getUnitcode();
+							unitCode=corpvo.getUnitcode();						
+							bFlag*=1;
 						}else{
-							bFlag=0;
+							bFlag*=0;
 						}
 					}
+					//已生成过凭证不重复生成
+					if (vo.getZyx15()!=null){
+						if(vo.getZyx15().equals("failed")||vo.getZyx15().equals("")){						
+							bFlag*=1;
+						}
+						if(vo.getZyx15().equals("noneed")||vo.getZyx15().equals("success")){
+							bFlag*=0;
+						}
+					}else{
+						bFlag*=1;
+					}
+					
 					subjCode=CreditSubj.getSubjCode(balatypeVO.getBalancode());
 					vouchType=CreditSubj.getVouchertype(subjCode);
 					ass1=CreditSubj.getAss1(balatypeVO.getBalancode());
