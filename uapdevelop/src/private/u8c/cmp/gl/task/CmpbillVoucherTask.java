@@ -104,7 +104,8 @@ public class CmpbillVoucherTask implements nc.bs.pub.taskcenter.IBackgroundWorkP
 					*/
 					switch(balatypeVO.getBalancode()){
 						case "00900":
-						case "00903":
+							//20220906 00903外阜农民工工资支付 需要在机关生成pz
+					//case "00903":
 							bFlag*=0;
 							break;
 						default:
